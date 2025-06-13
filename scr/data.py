@@ -11,9 +11,7 @@ def create_vocab(text:str):
     chars = sorted(list(set(text)))
     stoi = {ch: i for i, ch in enumerate(chars)} #list of ch to token index
     itos = {i: ch for i, ch in enumerate(chars)} #list of token index to ch
-    encode = lambda s: [stoi[c] for c in s]
-    decode = lambda l: ''.join([itos[i] for i in l])
-    return stoi, itos, encode, decode
+    return stoi, itos
 
 def encode(text:str, stoi:dict)->list[int]:
     """Encode txt->token ids"""
@@ -31,9 +29,9 @@ def get_batch(data: torch.Tensor, block_size:int, batch_size: int, device: str):
     return x.to(device), y.to(device)
 
 
-with open('../data/drake_lyrics.txt', 'r') as f:
+"""with open('../data/drake_lyrics.txt', 'r') as f:
     text = f.read()
 chars = sorted(list(set(text)))
 vocab_size = len(chars)
 print(''.join(chars))
-print(vocab_size)
+print(vocab_size)"""
