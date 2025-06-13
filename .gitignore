@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Environment + dependency tools
+*.env
+*.env.*
+.envrc
+
+# PyTorch model checkpoints
+*.pt
+*.pth
+
+# Training outputs and logs
+*.log
+*.out
+*.err
+
+# Data
+data/
+datasets/
+*.csv
+*.tsv
+*.jsonl
+*.zip
+
+# Notebooks
+.ipynb_checkpoints/
+
+# VSCode or other IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Git
+*.swp
