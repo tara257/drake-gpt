@@ -4,7 +4,7 @@ import torch
 
 def load_text(filepath:str)->str:
     """Load text data drake_lyrics.txt"""
-    with open('/data/drake_lyrics.txt', 'r') as f:
+    with open('data/drake_lyrics.txt', 'r', encoding='utf-8') as f:
         return f.read()
 
 

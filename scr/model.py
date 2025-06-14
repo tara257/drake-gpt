@@ -2,30 +2,29 @@
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-
+from torch.nn import functional as F
 
 class Head(nn.Module):
     """one head of self-attention"""
     def __init__(self, head_size, n_embd, block_size, dropout):
         super().__init__()
-        self.key = nn.Linear(n_embd, head_size, bias = False)
+        self.key = nn.Linear(n_embd, head_size, bias=False)
         self.query = nn.Linear(n_embd, head_size, bias=False)
         self.value = nn.Linear(n_embd, head_size, bias=False)
         self.register_buffer('tril', torch.tril(torch.ones(block_size, block_size)))
         self.dropout = nn.Dropout(dropout)
 
-def forward(self, x):
-    B, T, C = x.shape
-    k = self.key(x)
-    q = self.query(x)
-    wei = q@ k.transpose(-2, -1)* C**-0.5 #B, T, T transform
-    wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf')) #B, T, T
-    wei = F.softmax(wei, dim=-1)
-    wei = self.dropout(wei) 
-    v = self.value(x) #B, T, C
-    out = wei @ v #B, T, C 
-    return out
+    def forward(self, x):
+        B, T, C = x.shape
+        k = self.key(x)
+        q = self.query(x)
+        wei = q @ k.transpose(-2, -1) * C**-0.5
+        wei = wei.masked_fill(self.tril[:T, :T] == 0, float('-inf'))
+        wei = F.softmax(wei, dim=-1)
+        wei = self.dropout(wei)
+        v = self.value(x)
+        out = wei @ v
+        return out
 
 
 class MultiHeadAttention(nn.Module):
@@ -41,7 +40,7 @@ class MultiHeadAttention(nn.Module):
         out = self.dropout(self.proj(out))
         return out
 
-class FeedFoward(nn.Module):
+class FeedForward(nn.Module):
     """a simple linear layer followed by a non-linearity"""
     def __init__(self, n_embd, dropout):
         super().__init__()
@@ -58,10 +57,11 @@ class FeedFoward(nn.Module):
 
 class Block(nn.Module):
     """Transformer block: MultiHeadAttention -> FeedForward"""
-    def __init__(self, n_head, n_embd, block_size, dropout):
+    def __init__(self,n_embd, n_head, block_size, dropout):
         super().__init__()
-        self.sa = MultiHeadAttention(n_head, n_embd, block_size, dropout)
-        self.ffwd = FeedFoward(n_embd, dropout)
+        head_size = n_embd // n_head
+        self.sa = MultiHeadAttention(n_head, head_size, n_embd, block_size, dropout)
+        self.ffwd = FeedForward(n_embd, dropout)
         self.ln1 = nn.LayerNorm(n_embd)
         self.ln2 = nn.LayerNorm(n_embd)
 
